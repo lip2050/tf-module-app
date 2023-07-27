@@ -1,8 +1,20 @@
-resource "null_resource" "test" {
-  triggers = {
-    xyz = timestamp()
-  }
-  provisioner "local-exec" {
-    command = "echo Hello World - Env _ ${var.env}"
-  }
+resource "aws_iam_policy" "policy" {
+  name        = "${var.component}-${var.env}-ssm-pm-policy"
+  path        = "/"
+  description = "${var.component}-${var.env}-ssm-pm-policy"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
 }
