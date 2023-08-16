@@ -70,10 +70,9 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge ({
+  tags = {
     Name = "${var.component}-${var.env}-sg"
-    },
-    var.tags)
+  }
 }
 
 resource "aws_instance" "instance" {
@@ -82,9 +81,10 @@ resource "aws_instance" "instance" {
   vpc_security_group_ids = [aws_security_group.sg.id]
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
-  tags = {
+  tags = merge ({
     Name = "${var.component}-${var.env}"
-  }
+    },
+    var.tags)
 }
 
 resource "aws_route53_record" "dns" {
